@@ -92,7 +92,7 @@ module.exports = {
                 results * 1.75
             )} ticks\nMax Walls (${numeral(walls).format("00").toString().padStart(4,'0')}) | ${Math.ceil(
                 results * 2)} ticks\`\`\`
-                Wall count assumes city is built to max for its size.`
+Wall count assumes city is built to max for its size.`
 
 
         const embed = new MessageEmbed()
