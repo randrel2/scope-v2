@@ -415,21 +415,21 @@ module.exports = {
         let chances = [];
 
         chances.push(
-            ` Attack Table Requested by: ${interaction.user.username}
-            **Attacking Army: *${ArmyName}***
-            Prepared: *${numeral(prep).format("0")}*
-            Remaining: *${numeral(prepRem[0]).format("0")}*
-            Wall Prep: *${numeral(wallPrep).format("0")}*
-            Troops: *${numeral(ownTroops).format("0,0").replace(',','.')}*
-            **Target: *${TargetName}***
-            Military: *${milLevel}*
-            Bless: *${bless}*
-            Sieged: *${SiegeYN}*
-            Walls: *${numeral(wallsCount).format("0,0").replace(',','.')}*
-            GTs: *${numeral(currentTowers).format("0,0").replace(',','.')}*
-            Troops: *${numeral(currentSoldiers).format("0,0").replace(',','.')}*
-            Pez: *${numeral(currentPez).format("0,0").replace(',','.')}*
-            Chances over the remaining ticks:`
+`Attack Table Requested by: ${interaction.user.username}
+**Attacking Army: *${ArmyName}***
+Prepared: *${numeral(prep).format("0")}*
+Remaining: *${numeral(prepRem[0]).format("0")}*
+Wall Prep: *${numeral(wallPrep).format("0")}*
+Troops: *${numeral(ownTroops).format("0,0").replace(',','.')}*
+**Target: *${TargetName}***
+Military: *${milLevel}*
+Bless: *${bless}*
+Sieged: *${SiegeYN}*
+Walls: *${numeral(wallsCount).format("0,0").replace(',','.')}*
+GTs: *${numeral(currentTowers).format("0,0").replace(',','.')}*
+Troops: *${numeral(currentSoldiers).format("0,0").replace(',','.')}*
+Pez: *${numeral(currentPez).format("0,0").replace(',','.')}*
+Chances over the remaining ticks:`
         );
 
         chances.push(
