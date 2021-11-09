@@ -6,7 +6,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node .",
     "lint": "eslint .",
-    "dev": "nodemon .",
+    "dev": "nodemon . --ignore log.json --ignore remindLog.json",
     "build": "node build.js",
     "devbuild": "node devbuild.js"
   },
@@ -16,8 +16,12 @@
     "@discordjs/rest": "^0.1.0-canary.0",
     "discord-api-types": "^0.24.0",
     "discord.js": "^13.2.0",
+    "mathjs": "^9.5.1",
+    "mysql": "^2.18.1",
+    "node-cron": "^3.0.0",
     "numeral": "^2.0.6",
-    "pino": "^7.0.0-rc.9"
+    "pino": "^7.0.0-rc.9",
+    "sql": "^0.78.0"
   },
   "devDependencies": {
     "eslint": "^8.1.0"

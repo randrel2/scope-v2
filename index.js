@@ -3,6 +3,8 @@ const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 const logger = require('./logger');
+const { channel } = require('diagnostics_channel');
+let runOnce = false;
 client.on('ready', () => logger.info('The bot is online'));
 client.on('debug', m => logger.debug(m));
 client.on('warn', m => logger.warn(m));
@@ -15,15 +17,85 @@ for (const file of commandFiles) {
 }
 client.once('ready', () => {
 	console.log('Ready!');
+
+	var cron = require('node-cron');
+	var task = cron.schedule('*/15 * * * * *', () => {
+
+		const fs = require("fs");
+
+		// Read users.json file
+		fs.readFile("remindLog.json", function (err, data) {
+
+			// Check for errors
+			if (err) throw err;
+
+			var existData = JSON.parse(data);
+
+			// Grab current UNIX timestamp (timezone agnostic)
+			const curTime = Date.now();
+
+			// Converting to JSON
+			let deleteLog = [];
+			let deleteIter = 0;
+			let listingChange = false;
+
+			for (i = 0; i < existData.remindData.length; i++) {
+				var remindTime = existData.remindData[i].remindTime;
+				var server = existData.remindData[i].server;
+				var channel = existData.remindData[i].channel;
+				let userID = existData.remindData[i].user;
+				var message = existData.remindData[i].message;
+				var hours = existData.remindData[i].hours;
+				var minutes = existData.remindData[i].minutes;
+
+				if (remindTime <= curTime) {
+					let notify = `<@!${userID}>: ${message}
+			
+Reminder set ${hours} hour(s) and ${minutes} minutes ago.`;
+
+					//Send message to user channel they requested from
+					client.channels.cache.get(channel.toString()).send(notify);
+					deleteLog[deleteIter] = i;
+					deleteIter++;
+
+					listingChange = true;
+
+				}
+			}
+
+			if (listingChange === true) {
+				// Remove deleted rows from Array
+				for (i = deleteLog.length - 1; i > -1; i--) {
+
+					listingChange = true;
+
+					let removeData = existData.remindData.splice(deleteLog[i], 1);
+					console.log("PRUNED REMINDLOG ENTRY");
+				}
+
+
+				fs.writeFile('remindLog.json', JSON.stringify(existData, null, 1), function (err) {
+					if (err) throw err;
+					console.log('Updated remind database.');
+				})
+			}
+		});
+	});
+
+	task.start();
 });
 client.on('interactionCreate', async interaction => {
+	if (runOnce !== true) {
+
+	}
 	if (!interaction.isCommand() && !interaction.isButton()) return;
 	if (interaction.isCommand()) {
 		logger.info({
 			command: interaction.commandName,
 			server: interaction.member.guild.name + '|' + interaction.guildId,
-			user:interaction.user.username + '#' + interaction.user.discriminator,
-			options: interaction.options });
+			user: interaction.user.username + '#' + interaction.user.discriminator,
+			options: interaction.options
+		});
 		console.log(interaction.options);
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
@@ -40,5 +112,6 @@ client.on('interactionCreate', async interaction => {
 		return;
 	}
 });
+
 client.login(token);
 

@@ -30,25 +30,11 @@ module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('eits')
 		.setDescription('Calculates the OP/DP of EITS results, must paste the results THEN immediately call the bot')
-		.addIntegerOption(option =>
-			option.setName('magic')
-				.setDescription('The magic science level of the target')
-				.setRequired(false)
-				.addChoice('0', 0)
-				.addChoice('1', 1)
-				.addChoice('2', 2)
-				.addChoice('3', 3)
-				.addChoice('4', 4)
-				.addChoice('5', 5)
-				.addChoice('6', 6)
-				.addChoice('7', 7)
-				.addChoice('8', 8)
-				.addChoice('9+', 9),
-		)
+		
 		.addIntegerOption(option =>
 			option.setName('military')
 				.setDescription('The military science level of the target')
-				.setRequired(false)
+				.setRequired(true)
 				.addChoice('0', 0)
 				.addChoice('1', 1)
 				.addChoice('2', 2)
@@ -59,7 +45,22 @@ module.exports = {
 				.addChoice('7', 7)
 				.addChoice('8', 8)
 				.addChoice('9', 9)
-				.addChoice('10+', 10),
+				.addChoice('10', 10),
+		).addIntegerOption(option =>
+			option.setName('magic')
+				.setDescription('Required for AM calcs')
+				.setRequired(true)
+				.addChoice('0', 0)
+				.addChoice('1', 1)
+				.addChoice('2', 2)
+				.addChoice('3', 3)
+				.addChoice('4', 4)
+				.addChoice('5', 5)
+				.addChoice('6', 6)
+				.addChoice('7', 7)
+				.addChoice('8', 8)
+				.addChoice('9', 9)
+				.addChoice('10', 10),
 		),
 	async execute(interaction) {
 		const channel = await interaction.channel.fetch();
@@ -108,14 +109,16 @@ module.exports = {
 		}
 		// parse input data according to above
 		argArray = argArray.slice(startCut, endCut);
-		if (argArray.length < 20) {
+		console.log(argArray);
+		if (argArray.length < 15) {
 			// city === true, army === false
 			type = false;
+			intermNames = argArray.splice(0,1).toString().split('from');
+			console.log(intermNames);
+			owner = intermNames[1];
+			target = intermNames[0];
 			rawUnits = argArray.slice(argArray.length - 6, argArray.length).toString().replace('Pony,riders', 'Pony riders').toString().split(':').toString().split(',');
 			rawNames = argArray.slice(0, argArray.length - 6).toString().replace(':', ',').split(',');
-			intermNames = rawNames.slice(rawNames.indexOf('') + 1, rawNames.length);
-			target = intermNames.slice(0, intermNames.indexOf('from')).join(' ');
-			owner = intermNames.slice(intermNames.indexOf('from') + 1, intermNames.length).join(' ');
 		}
 		// City EITS reports
 		else {
@@ -132,9 +135,9 @@ module.exports = {
 			GTs = argArray.slice(endOwner + 13, endOwner + 15).toString().replace('Guard,Towers:', 'Guard Towers:').split(':')[1];
 			MTs = argArray.slice(endOwner + 11, endOwner + 13).toString().replace('Magic,Towers:', 'Magic Towers:').split(':')[1];
 			walls = argArray.slice(endOwner + 20, endOwner + 21).toString().split(':')[1];
-			console.log(walls);
 			extraArmies = argArray.slice(argArray.indexOf('city:') + 1, argArray.indexOf('city:') + 2).toString().split('(')[0];
-			extraTroops = argArray.slice(argArray.lastIndexOf('') - 2, argArray.lastIndexOf('') - 1);
+			extraTroops = argArray.slice(argArray.indexOf('men)') - 1, argArray.indexOf('men)'));
+			console.log(extraTroops);
 			rawUnits.push('GTs', GTs);
 		}
 		for (i = 0; i < (rawUnits.length / 2); i++) {
@@ -165,7 +168,7 @@ module.exports = {
 
 		// LOGIC ENDS HERE
 
-		const embedContent = `Calculation Requestion by: ${interaction.user.username}
+		const embedContent = `Calculation Requested by: ${interaction.user.username}
 		**Target ${type ? 'City' : 'Army'}:**
 		${target}
 		**Owner:**
@@ -184,15 +187,17 @@ module.exports = {
 		Magic Towers: ${numeral(MTs).format('0,0')}
 		Extra Armies: ${numeral(extraArmies).format('0')}
 		Extra Troops: ${numeral(extraTroops).format('0,0')}
-		Walls: ${numeral(walls).format('0,0')}` : ''}
-		
+		Walls: ${numeral(walls).format('0,0')}\n` : ''}
 		**Power:**
 		Military Sci: ${military}
 		Magic Sci: ${magic}
 		Cost: ${numeral(cost).format('0,0')}
 		OP: ${numeral(op).format('0,0')}
 		DP: ${numeral(dp).format('0,0')}
+
 		OP for 100%: ${numeral(3 * dp).format('0,0')}
+		OP for 15%: ${numeral(0.7 * dp).format('0,0')}
+		^ *For AotD-chain*
 		
 		credit:
 		made with :heart: by Percy & Moff`;
