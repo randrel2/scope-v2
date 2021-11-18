@@ -159,7 +159,7 @@ function battlecalc(string) {
         OPDPbase = 0,
         OPDPexp = 0;
     let startOPDP = [],
-        modOPDP = [];
+        maxOPDP = [];
 
     let i = 0;
     for (i = 0; i <= 1; i++) {
