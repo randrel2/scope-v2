@@ -125,14 +125,3 @@ const requestListener = function(req, res) {
 const server = http.createServer(requestListener);
 server.listen(process.env.PORT);
 
-import fetch from 'node-fetch'
-
-cron.schedule('*/3 * * * *', () => {
- 
-
-const response = await fetch('https://scope-v2.herokuapp.com');
-const body = await response.text();
-
-console.log("index fetched");
-
-});
