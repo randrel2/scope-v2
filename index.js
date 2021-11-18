@@ -115,3 +115,12 @@ client.on('interactionCreate', async interaction => {
 
 client.login(process.env.token);
 
+const http = require('http');
+
+const requestListener = function(req, res) {
+    res.writeHead(200);
+    res.end('Scope isn\'t a webserver, but heroku is picky without one');
+};
+
+const server = http.createServer(requestListener);
+server.listen(process.env.port);
