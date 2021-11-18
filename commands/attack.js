@@ -186,7 +186,7 @@ function battlecalc(string) {
 
         // Ouput OPDP value
         startOPDP[i] = Math.pow(OPDPbase, OPDPexp);
-        modOPDP[i] = startOPDP[i] / CurPrep;
+        maxOPDP[i] = startOPDP[i] / CurPrep * Prep[0];
     }
 
     let attackChance = [];
@@ -200,7 +200,7 @@ function battlecalc(string) {
         // Iterate through Remaining Prep to find %Chance at each tick
         for (i = 0; i <= 1; i++) {
             // OPDP based on current tick iteration
-            OPDP = modOPDP[i] * (CurPrep + j);
+            OPDP = maxOPDP[i] * (CurPrep + j) / Prep[0];
 
             // Initialize 6th order polynomial ()
             expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
@@ -236,8 +236,11 @@ function battlecalc(string) {
         // Iterate through Remaining Prep to find %Chance at each tick
         for (i = 0; i <= 1; i++) {
             // OPDP based on current tick iteration
-            OPDP = modOPDP[i] * (CurPrep + PrepAdvance + j);
-
+            if(Prep[1] > 0){
+                OPDP = maxOPDP[i] * (CurPrep + PrepAdvance + j) / Prep[1];
+            }else{
+                OPDP = maxOPDP[i] * (CurPrep + PrepAdvance + j) / 1;
+            }
             // Initialize 6th order polynomial ()
             expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
 
