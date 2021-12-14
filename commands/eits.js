@@ -169,38 +169,38 @@ module.exports = {
 		// LOGIC ENDS HERE
 
 		const embedContent = `Calculation Requested by: ${interaction.user.username}
-		**Target ${type ? 'City' : 'Army'}:**
-		${target}
-		**Owner:**
-		${owner}
+**Target ${type ? 'City' : 'Army'}:**
+${target}
+**Owner:**
+${owner}
 
-		**Units:**
-		${race.u1.name}: ${numeral(units[0]).format('0,0')}
-		${race.u2.name}: ${numeral(units[1]).format('0,0')}
-		${race.u3.name}: ${numeral(units[2]).format('0,0')}
-		${race.u4.name}: ${numeral(units[3]).format('0,0')}
-		${race.u5.name}: ${numeral(units[4]).format('0,0')}
-		${race.u6.name}: ${numeral(units[5]).format('0,0')}
-		${type ? `
-		**Buildings:**
-		${race.u7.name}: ${numeral(units[6]).format('0,0')}
-		Magic Towers: ${numeral(MTs).format('0,0')}
-		Extra Armies: ${numeral(extraArmies).format('0')}
-		Extra Troops: ${numeral(extraTroops).format('0,0')}
-		Walls: ${numeral(walls).format('0,0')}\n` : ''}
-		**Power:**
-		Military Sci: ${military}
-		Magic Sci: ${magic}
-		Cost: ${numeral(cost).format('0,0')}
-		OP: ${numeral(op).format('0,0')}
-		DP: ${numeral(dp).format('0,0')}
+**Units:**
+${race.u1.name}: ${numeral(units[0]).format('0,0')}
+${race.u2.name}: ${numeral(units[1]).format('0,0')}
+${race.u3.name}: ${numeral(units[2]).format('0,0')}
+${race.u4.name}: ${numeral(units[3]).format('0,0')}
+${race.u5.name}: ${numeral(units[4]).format('0,0')}
+${race.u6.name}: ${numeral(units[5]).format('0,0')}
+${type ? `
+**Buildings:**
+${race.u7.name}: ${numeral(units[6]).format('0,0')}
+Magic Towers: ${numeral(MTs).format('0,0')}
+Extra Armies: ${numeral(extraArmies).format('0')}
+Extra Troops: ${numeral(extraTroops).format('0,0')}
+Walls: ${numeral(walls).format('0,0')}\n` : ''}
+**Power:**
+Military Sci: ${military}
+Magic Sci: ${magic}
+Cost: ${numeral(cost).format('0,0')}
+OP: ${numeral(op).format('0,0')}
+DP: ${numeral(dp).format('0,0')}
 
-		OP for 100%: ${numeral(3 * dp).format('0,0')}
-		OP for 15%: ${numeral(0.7 * dp).format('0,0')}
-		^ *For AotD-chain*
+OP for 100%: ${numeral(3 * dp).format('0,0')}
+OP for 15%: ${numeral(0.7 * dp).format('0,0')}
+^ *For AotD-chain*
 		
-		credit:
-		made with :heart: by Percy & Moff`;
+credit:
+made with :heart: by Percy & Moff`;
 
 		const embed = new MessageEmbed()
 			.setColor(2123412)

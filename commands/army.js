@@ -108,11 +108,11 @@ module.exports = {
 
 		const embedContent =
 			`Total OP: **${numeral(op).format(0, 0)}**
-			Total DP: **${numeral(dp).format(0, 0)}**
-			Total Cost: **${numeral(cost).format(0, 0)}**
+Total DP: **${numeral(dp).format(0, 0)}**
+Total Cost: **${numeral(cost).format(0, 0)}**
 			
-			Required OP to Slaughter: **${numeral(dieOP).format(0, 0)}**
-			DP that can be slaughered: **${numeral(killDP).format(0, 0)}**`
+Required OP to Slaughter: **${numeral(dieOP).format(0, 0)}**
+DP that can be slaughered: **${numeral(killDP).format(0, 0)}**`
 
 		const embed = new MessageEmbed()
 			.setColor(2123412)

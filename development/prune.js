@@ -9,7 +9,7 @@ module.exports = {
 		.addIntegerOption(option => option.setName('amount').setDescription('Number of messages to prune')),
 	async execute(interaction) {
 		const amount = interaction.options.getInteger('amount');
-		if (!(interaction.memberPermissions.has('MANAGE_MESSAGES') != true || creator)) {
+		if ((interaction.memberPermissions.has('MANAGE_MESSAGES') != true)) {
 			return interaction.reply({ content: 'You do not have permission to purge messages in this channel.', ephemeral: true });
 		}
 		if (amount < 1 || amount > 100) {

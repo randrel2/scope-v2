@@ -59,12 +59,12 @@ module.exports = {
         }
 
         const rangeEst = `Race: **${userRace}**
-            ${countIn ?
+${countIn ?
                `\nMTs of target:     *${numeral(inputMTcount).format("0,0")}*
-                Est Target Range:  *${numeral(outputMTrange).format("0.00")}*\n` : ''}${rangeIn ?
+Est Target Range:  *${numeral(outputMTrange).format("0.00")}*\n` : ''}${rangeIn ?
                `\nTarget Distance:   *${numeral(inputMTrange).format("0.00")}* 
-                Est MTs Required:  *${numeral(outputMTcount).format("0,0")}*\n` : ''}
-                **Distance unit**: Big X's w/ 1 T1 unit`;
+Est MTs Required:  *${numeral(outputMTcount).format("0,0")}*\n` : ''}
+**Distance unit**: Big X's w/ 1 T1 unit`;
 
         const embed = new MessageEmbed()
             .setColor(2123412)

@@ -54,7 +54,7 @@ module.exports = {
 
         const embedContent = `In **${hours} hour(s)** and **${minutes} minutes**:
 
-        ${message}`;
+${message}`;
 
         const embed = new MessageEmbed()
             .setColor(2123412)

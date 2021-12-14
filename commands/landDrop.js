@@ -106,16 +106,16 @@ module.exports = {
                             outputLog = true;
 
                             embedContent = `**Resource | Tot Remaining | Ticks**
-                        Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
-                        Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
-                        Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
+Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
+Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
+Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
                         
-                        **If all excess excess stone is sold...**
-                        Gold: *${numeral(goldRem - newGold).format('0,0')} | ${i}*
-                        ~~Stone: ~~*~~${numeral(stoneTot).format('0,0')} | ${i}~~*
-                        Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
+**If all excess excess stone is sold...**
+Gold: *${numeral(goldRem - newGold).format('0,0')} | ${i}*
+~~Stone: ~~*~~${numeral(stoneTot).format('0,0')} | ${i}~~*
+Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
                         
-                        Strikethrough is sold amount and ticks worth of econ sold.`;
+Strikethrough is sold amount and ticks worth of econ sold.`;
                             break
                         }
                     }
@@ -123,29 +123,29 @@ module.exports = {
 
                 if(outputLog == false){
                     embedContent = `**Resource | Tot Remaining | Ticks**
-        Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
-        Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
-        Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
-        
-        Error with stone calc. Excess stone detected, but loop could not close.`;
+Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
+Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
+Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
+
+Error with stone calc. Excess stone detected, but loop could not close.`;
                 }
 
 
             } else {
                 embedContent = `**Resource | Tot Remaining | Ticks**
-        Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
-        Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
-        Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
+Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
+Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
+Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
         
-        Stone market sales not valid, not estimated to have surplus stone`;
+Stone market sales not valid, not estimated to have surplus stone`;
             }
         } else {
             embedContent = `**Resource | Tot Remaining | Ticks**
-        Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
-        Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
-        Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
+Gold: *${numeral(goldRem).format('0,0')} | ${goldTick}*
+Stone: *${numeral(stoneRem).format('0,0')} | ${stoneTick}*
+Wood: *${numeral(woodRem).format('0,0')} | ${woodTick}*
         
-        Stone sales not added due to non-entry or outside of 0-1 range.`;
+Stone sales not added due to non-entry or outside of 0-1 range.`;
         }
 
         const embed = new MessageEmbed()

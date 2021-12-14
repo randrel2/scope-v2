@@ -159,7 +159,7 @@ function battlecalc(string) {
         OPDPbase = 0,
         OPDPexp = 0;
     let startOPDP = [],
-        modOPDP = [];
+        maxOPDP = [];
 
     let i = 0;
     for (i = 0; i <= 1; i++) {
@@ -186,7 +186,7 @@ function battlecalc(string) {
 
         // Ouput OPDP value
         startOPDP[i] = Math.pow(OPDPbase, OPDPexp);
-        modOPDP[i] = startOPDP[i] / CurPrep;
+        maxOPDP[i] = (startOPDP[i] / CurPrep) * (CurPrep + Prep[0]);
     }
 
     let attackChance = [];
@@ -200,7 +200,7 @@ function battlecalc(string) {
         // Iterate through Remaining Prep to find %Chance at each tick
         for (i = 0; i <= 1; i++) {
             // OPDP based on current tick iteration
-            OPDP = modOPDP[i] * (CurPrep + j);
+            OPDP = maxOPDP[i] * (CurPrep + j) / (Prep[0] + CurPrep);
 
             // Initialize 6th order polynomial ()
             expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
@@ -236,8 +236,11 @@ function battlecalc(string) {
         // Iterate through Remaining Prep to find %Chance at each tick
         for (i = 0; i <= 1; i++) {
             // OPDP based on current tick iteration
-            OPDP = modOPDP[i] * (CurPrep + PrepAdvance + j);
-
+            if(Prep[1] > 0){
+                OPDP = maxOPDP[i] * (CurPrep + j) / (Prep[1] + CurPrep);
+            }else{
+                OPDP = maxOPDP[i] * (CurPrep + j) / 1;
+            }
             // Initialize 6th order polynomial ()
             expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
 
@@ -415,21 +418,21 @@ module.exports = {
         let chances = [];
 
         chances.push(
-            ` Attack Table Requested by: ${interaction.user.username}
-            **Attacking Army: *${ArmyName}***
-            Prepared: *${numeral(prep).format("0")}*
-            Remaining: *${numeral(prepRem[0]).format("0")}*
-            Wall Prep: *${numeral(wallPrep).format("0")}*
-            Troops: *${numeral(ownTroops).format("0,0").replace(',','.')}*
-            **Target: *${TargetName}***
-            Military: *${milLevel}*
-            Bless: *${bless}*
-            Sieged: *${SiegeYN}*
-            Walls: *${numeral(wallsCount).format("0,0").replace(',','.')}*
-            GTs: *${numeral(currentTowers).format("0,0").replace(',','.')}*
-            Troops: *${numeral(currentSoldiers).format("0,0").replace(',','.')}*
-            Pez: *${numeral(currentPez).format("0,0").replace(',','.')}*
-            Chances over the remaining ticks:`
+`Attack Table Requested by: ${interaction.user.username}
+**Attacking Army: *${ArmyName}***
+Prepared: *${numeral(prep).format("0")}*
+Remaining: *${numeral(prepRem[0]).format("0")}*
+Wall Prep: *${numeral(wallPrep).format("0")}*
+Troops: *${numeral(ownTroops).format("0,0").replace(',','.')}*
+**Target: *${TargetName}***
+Military: *${milLevel}*
+Bless: *${bless}*
+Sieged: *${SiegeYN}*
+Walls: *${numeral(wallsCount).format("0,0").replace(',','.')}*
+GTs: *${numeral(currentTowers).format("0,0").replace(',','.')}*
+Troops: *${numeral(currentSoldiers).format("0,0").replace(',','.')}*
+Pez: *${numeral(currentPez).format("0,0").replace(',','.')}*
+Chances over the remaining ticks:`
         );
 
         chances.push(
