@@ -1,6 +1,6 @@
 const fs = require('fs');
+require('dotenv').config();
 const { Client, Collection, Intents } = require('discord.js');
-const { token } = require('./config.json');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
 const logger = require('./logger');
 const { channel } = require('diagnostics_channel');
@@ -113,5 +113,15 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-client.login(token);
+client.login(process.env.token);
+
+const http = require('http');
+
+const requestListener = function(req, res) {
+    res.writeHead(200);
+    res.end('Scope isn\'t a webserver, but heroku is picky without one');
+};
+
+const server = http.createServer(requestListener);
+server.listen(process.env.PORT);
 
