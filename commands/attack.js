@@ -187,6 +187,7 @@ function battlecalc(string) {
         // Ouput OPDP value
         startOPDP[i] = Math.pow(OPDPbase, OPDPexp);
         maxOPDP[i] = (startOPDP[i] / CurPrep) * (CurPrep + Prep[0]);
+
     }
 
     let attackChance = [];
