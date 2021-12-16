@@ -376,12 +376,21 @@ function battlecalc(string) {
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('attack')
-        .setDescription('Paste, post message, then call'),
+        .setDescription('Paste, post message, then call')
+        .addIntegerOption(option =>
+			option.setName('visible')
+				.setDescription('Show to all, or just you?')
+				.setRequired(false)
+				.addChoice('Just me', 1)
+				.addChoice('Everyone', 0),
+        ),
+
     async execute(interaction) {
         const channel = await interaction.channel.fetch();
         const messages = await channel.messages.fetch({ limit: 1 });
         const firstmessage = messages.keys().next().value;
         const messageContent = (messages.get(firstmessage)['content']);
+        const userChoice = interaction.options.getInteger('visible');
 
         const allVals = battlecalc(messageContent);
         let ticks = 0;
@@ -484,7 +493,7 @@ Chances over the remaining ticks:`
             .setTitle(`${TargetName} - Prep Calculation`)
             .setDescription(chances.toString().replaceAll(",", "").replaceAll(".",","))
             .setTimestamp();
-        return await interaction.reply({ embeds: [embed] });
+        return await interaction.reply({ embeds: [embed], ephemeral: userChoice });
 
     },
 };
