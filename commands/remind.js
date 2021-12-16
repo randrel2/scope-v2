@@ -18,12 +18,6 @@ module.exports = {
             option.setName('noti')
                 .setDescription('Reminder message contents')
                 .setRequired(true),
-        ).addIntegerOption(option =>
-			option.setName('visible')
-				.setDescription('Show to all, or just you?')
-				.setRequired(false)
-				.addChoice('Just me', 1)
-				.addChoice('Everyone', 0),
         ),
 
     async execute(interaction) {
@@ -38,7 +32,6 @@ module.exports = {
         const userID = interaction.user.id;
         const server = interaction.guild.id;
         const channel = interaction.channel.id;
-        const userChoice = interaction.options.getInteger('visible');
 
         // If both are set to 0, error out
         if (minutes == 0 && hours == 0) {
@@ -67,6 +60,6 @@ ${message}`;
             .setColor(2123412)
             .setTitle(`Reminder set for ${interaction.user.username}`)
             .setDescription(embedContent);
-        return interaction.reply({ embeds: [embed], ephemeral: userChoice });
+        return interaction.reply({ embeds: [embed]});
     }
 }
