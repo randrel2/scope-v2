@@ -61,12 +61,20 @@ module.exports = {
 				.addChoice('8', 8)
 				.addChoice('9', 9)
 				.addChoice('10', 10),
-		),
+		).addIntegerOption(option =>
+			option.setName('visible')
+				.setDescription('Show to all, or just you?')
+				.setRequired(false)
+				.addChoice('Just me', 1)
+				.addChoice('Everyone', 0),
+        ),
 	async execute(interaction) {
 		const channel = await interaction.channel.fetch();
 		const messages = await channel.messages.fetch({ limit: 1 });
 		const firstmessage = messages.keys().next().value;
 		const messageContent = (messages.get(firstmessage)['content']);
+		const userChoice = interaction.options.getInteger('visible');
+
 		// LOGIC STARTS HERE
 		const races = require('../resources/units');
 		let op = 0;
@@ -207,6 +215,6 @@ made with :heart: by Percy & Moff`;
 			.setTitle(`${target} - Eye in the Sky`)
 			.setDescription(embedContent)
 			.setTimestamp();
-		return await interaction.reply({ embeds: [ embed ] });
+		return await interaction.reply({ embeds: [ embed ], ephemeral: userChoice });
 	},
 };

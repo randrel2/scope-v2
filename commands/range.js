@@ -20,6 +20,12 @@ module.exports = {
             option.setName('distance')
                 .setDescription('Scout ticks required to reach target')
                 .setRequired(false),
+        ).addIntegerOption(option =>
+			option.setName('visible')
+				.setDescription('Show to all, or just you?')
+				.setRequired(false)
+				.addChoice('Just me', 1)
+				.addChoice('Everyone', 0),
         ),
 
     async execute(interaction) {
@@ -27,6 +33,7 @@ module.exports = {
         const userRace = interaction.options.getString('race');
         const inputMTcount = interaction.options.getInteger('mts') ? interaction.options.getInteger('mts') : -2;
         const inputMTrange = interaction.options.getNumber('distance') ? interaction.options.getNumber('distance') : -2;
+        const userChoice = interaction.options.getInteger('visible');
         let outputMTrange = 0;
         let outputMTcount = 0;
         let rangeIn = false;
@@ -70,7 +77,7 @@ Est MTs Required:  *${numeral(outputMTcount).format("0,0")}*\n` : ''}
             .setColor(2123412)
             .setTitle(`Magic Range Estimation`)
             .setDescription(rangeEst);
-        return interaction.reply({ embeds: [embed] });
+        return interaction.reply({ embeds: [embed], ephemeral: userChoice });
 
     },
 };

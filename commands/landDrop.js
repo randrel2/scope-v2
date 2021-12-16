@@ -51,6 +51,12 @@ module.exports = {
             option.setName('stoneprice')
                 .setDescription('Sale price of stone in market (0 if unused)')
                 .setRequired(true),
+        ).addIntegerOption(option =>
+			option.setName('visible')
+				.setDescription('Show to all, or just you?')
+				.setRequired(false)
+				.addChoice('Just me', 1)
+				.addChoice('Everyone', 0),
         ),
 
     async execute(interaction) {
@@ -153,7 +159,7 @@ Stone sales not added due to non-entry or outside of 0-1 range.`;
             .setTitle(`Land drop ${buildings} buildings - ${interaction.user.username}`)
             .setDescription(embedContent)
             .setTimestamp();
-        return await interaction.reply({ embeds: [embed] });
+        return await interaction.reply({ embeds: [embed], ephemeral: userChoice });
 
     },
 };

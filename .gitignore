@@ -3,3 +3,4 @@ log.json
 yarn.lock
 .env
 config.json
+remindLog.json
