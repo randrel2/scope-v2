@@ -7,7 +7,7 @@ const races = require('../resources/units');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('army')
-		.setDescription('Provides the OPDP of given troops')
+		.setDescription('Provides the OP & DP of given troops')
 		.addStringOption(option =>
 			option.setName('race')
 				.setDescription('Race to calculate for')
@@ -68,6 +68,14 @@ module.exports = {
 			option.setName('t5')
 				.setDescription('Tier 5 troop count')
 				.setRequired(true),
+		).addNumberOption(option =>
+			option.setName('bless')
+				.setDescription('% Bless of Army')
+				.setRequired(false),
+		).addIntegerOption(option =>
+			option.setName('xp')
+				.setDescription('XP of Army')
+				.setRequired(false),
 		),
 	async execute(interaction) {
 		const military = interaction.options.getInteger('military');
@@ -78,6 +86,8 @@ module.exports = {
 		const u3 = interaction.options.getInteger('t3');
 		const u4 = interaction.options.getInteger('t4');
 		const u5 = interaction.options.getInteger('t5');
+		const bless = Number(interaction.options.getNumber('bless') ? interaction.options.getNumber('bless') : 0);
+		const xp = Number(interaction.options.getInteger('xp') ? interaction.options.getInteger('xp') : 0);
 		const input = [u1, u2, u3, u4, u5];
 		const units = races[race];
 		let op = 0;
@@ -100,8 +110,8 @@ module.exports = {
 			}
 		}
 
-		op = Math.round(op * (1 + military / 10));
-		dp = Math.round(dp * (1 + military / 10));
+		op = Math.round(op * (1 + military / 10) * (1 + bless/100) * (1 + xp/50));
+		dp = Math.round(dp * (1 + military / 10) * (1 + bless/100) * (1 + xp/50));
 
 		let dieOP = op * 3;
 		let killDP = op / 3;
