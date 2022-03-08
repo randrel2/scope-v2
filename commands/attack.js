@@ -1,6 +1,7 @@
 const numeral = require("numeral");
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed } = require('discord.js');
+const { log10 } = require("mathjs");
 
 function nthIndex(str, pat, n) {
     var L = str.length,
@@ -145,56 +146,21 @@ function battlecalc(string) {
     const startChance = [CurAttack / 100, CurSiege / 100];
 
     // Initialize common variables and arrays
-    let base = 0,
-        exp = 0,
-        expSign = 0,
-        x6 = 0,
-        x5 = 0,
-        x4 = 0,
-        x3 = 0,
-        x2 = 0,
-        x1 = 0,
-        x0 = 0,
-        modChance = 0,
-        OPDPbase = 0,
-        OPDPexp = 0;
     let startOPDP = [],
         maxOPDP = [];
 
     let i = 0;
     for (i = 0; i <= 1; i++) {
-        // Initialize Chance -> OPDP conversion
-        base = 1 + Math.sign(Math.log10(startChance[i] / 0.5000000001));
-        exp = 1 - Math.sign(Math.log10(startChance[i] / 0.5));
-        expSign = Math.pow(base, exp);
 
-        // Modified chance value to use with equation set
-        modChance = Math.abs(expSign - startChance[i]);
-
-        // Primary 6th order polynomial (Chance 2 OPDP)
-        x6 = -1285.2 * Math.pow(modChance, 6);
-        x5 = 2157 * Math.pow(modChance, 5);
-        x4 = -1411.2 * Math.pow(modChance, 4);
-        x3 = 455.98 * Math.pow(modChance, 3);
-        x2 = -76.797 * Math.pow(modChance, 2);
-        x1 = 7.5023 * Math.pow(modChance, 1);
-        x0 = 0.3254;
-
-        // Convert polyomial output to proper OPDP value
-        OPDPbase = x6 + x5 + x4 + x3 + x2 + x1 + x0;
-        OPDPexp = -Math.sign(Math.log10(startChance[i] / 0.5000000001));
-
-        // Ouput OPDP value
-        startOPDP[i] = Math.pow(OPDPbase, OPDPexp);
+        startOPDP[i] = Math.pow(startChance[i]/(1-startChance[i]),0.2);
         maxOPDP[i] = (startOPDP[i] / CurPrep) * (CurPrep + Prep[0]);
 
     }
-
+    
     let attackChance = [];
     let TotAttackChance = [];
     TotAttackChance.push([CurAttack, CurSiege]);
-    let OPDP = 0,
-        leadSign = 0;
+    let OPDP = 0;
 
     // First iteration, full walls
     for (j = 1; j <= Prep[0]; j++) {
@@ -203,27 +169,8 @@ function battlecalc(string) {
             // OPDP based on current tick iteration
             OPDP = maxOPDP[i] * (CurPrep + j) / (Prep[0] + CurPrep);
 
-            // Initialize 6th order polynomial ()
-            expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
-
-            // Execute OPDP -> % Chance equation set
-            x6 = 0.7303 * Math.pow(OPDP, 6 * expSign);
-            x5 = -4.1767 * Math.pow(OPDP, 5 * expSign);
-            x4 = 6.4802 * Math.pow(OPDP, 4 * expSign);
-            x3 = -3.1237 * Math.pow(OPDP, 3 * expSign);
-            x2 = 0.6429 * Math.pow(OPDP, 2 * expSign);
-            x1 = -0.0534 * Math.pow(OPDP, 1 * expSign);
-            x0 = 0.0011;
-
-            // Convert equation to useful output
-            base = 1 + Math.sign(Math.log10(OPDP / 1.0000000001));
-            exp = 1 - Math.sign(Math.log10(OPDP / 1));
-            leadSign = Math.pow(base, exp);
-
             // Add current chance value to array of values
-            attackChance[i] = Math.round(
-                100 * (leadSign + expSign * (x6 + x5 + x4 + x3 + x2 + x1 + x0))
-            );
+            attackChance[i] = Math.round(100 * (1 - 1 / (1 + Math.pow(10,5*log10(OPDP)))));
         }
 
         TotAttackChance.push([attackChance[0], attackChance[1]]);
@@ -242,27 +189,9 @@ function battlecalc(string) {
             }else{
                 OPDP = maxOPDP[i] * (CurPrep + j) / 1;
             }
-            // Initialize 6th order polynomial ()
-            expSign = -Math.sign(Math.log10(OPDP / 1.0000000001));
-
-            // Execute OPDP -> % Chance equation set
-            x6 = 0.7303 * Math.pow(OPDP, 6 * expSign);
-            x5 = -4.1767 * Math.pow(OPDP, 5 * expSign);
-            x4 = 6.4802 * Math.pow(OPDP, 4 * expSign);
-            x3 = -3.1237 * Math.pow(OPDP, 3 * expSign);
-            x2 = 0.6429 * Math.pow(OPDP, 2 * expSign);
-            x1 = -0.0534 * Math.pow(OPDP, 1 * expSign);
-            x0 = 0.0011;
-
-            // Convert equation to useful output
-            base = 1 + Math.sign(Math.log10(OPDP / 1.0000000001));
-            exp = 1 - Math.sign(Math.log10(OPDP / 1));
-            leadSign = Math.pow(base, exp);
 
             // Add current chance value to array of values
-            noWallChance[i] = Math.round(
-                100 * (leadSign + expSign * (x6 + x5 + x4 + x3 + x2 + x1 + x0))
-            );
+            noWallChance[i] =  Math.round(100 * (1 - 1 / (1 + Math.pow(10,5*log10(OPDP)))));
 
             // Print array of chance values
         }
