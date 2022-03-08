@@ -68,6 +68,10 @@ module.exports = {
 			option.setName('t5')
 				.setDescription('Tier 5 troop count')
 				.setRequired(true),
+		).addIntegerOption(option =>
+			option.setName('morale')
+				.setDescription('Non-0 Morale of Army')
+				.setRequired(false),
 		).addNumberOption(option =>
 			option.setName('bless')
 				.setDescription('% Bless of Army')
@@ -88,6 +92,7 @@ module.exports = {
 		const u5 = interaction.options.getInteger('t5');
 		const bless = Number(interaction.options.getNumber('bless') ? interaction.options.getNumber('bless') : 0);
 		const xp = Number(interaction.options.getInteger('xp') ? interaction.options.getInteger('xp') : 0);
+		const morale = Number(interaction.options.getInteger('morale') ? interaction.options.getInteger('morale') : 100);
 		const input = [u1, u2, u3, u4, u5];
 		const units = races[race];
 		let op = 0;
@@ -110,9 +115,9 @@ module.exports = {
 			}
 		}
 
-		op = Math.round(op * (1 + military / 10) * (1 + bless/100) * (1 + xp/50));
-		dp = Math.round(dp * (1 + military / 10) * (1 + bless/100) * (1 + xp/50));
-
+		op = Math.round(op * (1 + military / 10) * (1 + bless/100) * (1 + xp/50) * ((1 + morale/100) / 2));
+		dp = Math.round(dp * (1 + military / 10) * (1 + bless/100) * (1 + xp/50) * ((1 + morale/100) / 2));
+		
 		let dieOP = op * 3;
 		let killDP = op / 3;
 
