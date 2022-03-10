@@ -118,7 +118,7 @@ module.exports = {
 		op = Math.round(op * (1 + military / 10) * (1 + bless/100) * (1 + xp/50) * ((1 + morale/100) / 2));
 		dp = Math.round(dp * (1 + military / 10) * (1 + bless/100) * (1 + xp/50) * ((1 + morale/100) / 2));
 		
-		let dieOP = op * 3;
+		let dieOP = dp * 3;
 		let killDP = op / 3;
 
 		const embedContent =
@@ -131,7 +131,7 @@ DP that can be slaughered: **${numeral(killDP).format(0, 0)}**`
 
 		const embed = new MessageEmbed()
 			.setColor(2123412)
-			.setTitle(`Army power calculation requested by  ${interaction.user.username}`)
+			.setTitle(`${interaction.user.username} - Army Power`)
 			.setDescription(embedContent);
 		return interaction.reply({ embeds: [embed] });
 	},
