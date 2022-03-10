@@ -315,12 +315,13 @@ module.exports = {
         ),
 
     async execute(interaction) {
+
         const channel = await interaction.channel.fetch();
         const messages = await channel.messages.fetch({ limit: 1 });
         const firstmessage = messages.keys().next().value;
         const messageContent = (messages.get(firstmessage)['content']);
         const userChoice = interaction.options.getInteger('visible');
-
+        
         const allVals = battlecalc(messageContent);
         let ticks = 0;
         let attack = 0;

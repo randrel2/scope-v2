@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
 const { token } = require('./config.json');
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({partials: ["CHANNEL"], intents: [Intents.FLAGS.GUILDS,Intents.FLAGS.DIRECT_MESSAGES] });
 const logger = require('./logger');
 client.on('ready', () => logger.info('The bot is online'));
 client.on('debug', (m) => logger.debug(m));
@@ -38,7 +38,6 @@ client.once('ready', () => {
 
 			for (i = 0; i < existData.remindData.length; i++) {
 				const remindTime = existData.remindData[i].remindTime;
-				const server = existData.remindData[i].server;
 				const channel = existData.remindData[i].channel;
 				const userID = existData.remindData[i].user;
 				const message = existData.remindData[i].message;
@@ -87,7 +86,6 @@ client.on('interactionCreate', async (interaction) => {
 	if (interaction.isCommand()) {
 		logger.info({
 			command: interaction.commandName,
-			server: interaction.member.guild.name + '|' + interaction.guildId,
 			user: interaction.user.username + '#' + interaction.user.discriminator,
 			options: interaction.options,
 		});
