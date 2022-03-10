@@ -36,7 +36,6 @@ module.exports = {
         const hours = Math.abs(interaction.options.getInteger('hours'));
         const message = interaction.options.getString('noti');
         const userID = interaction.user.id;
-        const server = interaction.guild.id;
         const channel = interaction.channel.id;
         const userChoice = interaction.options.getInteger('visible');
 
@@ -48,7 +47,7 @@ module.exports = {
         // Convert minutes and hours to milliseconds
         const newTime = curTime + (minutes * 60 * 1000 + hours * 3600 * 1000);
 
-        let newEntry = {"remindTime":newTime,"server":server,"channel":channel,"user":userID,"message":message,"hours":hours,"minutes":minutes};
+        let newEntry = {"remindTime":newTime,"channel":channel,"user":userID,"message":message,"hours":hours,"minutes":minutes};
 
         fs.readFile('./remindLog.json',function(err,content){
           if(err) throw err;
