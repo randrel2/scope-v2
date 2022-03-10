@@ -72,6 +72,8 @@ module.exports = {
         const woodProd = interaction.options.getInteger('woodprod');
         const stonePrice = interaction.options.getNumber('stoneprice') ? interaction.options.getNumber('stoneprice') : 0;
 
+        const userChoice = interaction.options.getInteger('visible');
+        
         let embedContent = [];
 
         const goldRem = (buildings * goldCost) - goldReserve;
