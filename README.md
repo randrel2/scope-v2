@@ -2,9 +2,9 @@
 
 ## What is SCOPE?
 
-SCOPE is a discordJS bot that support the **Specific Calculation of Power (for) EiTS...** Or... more specifically, it's a discord bot that provides multiple functions to increase the decision making processes of players in [Visual-Utopia, _"A massively multi player strategy war game!"_ built in the early 2000s and rarely updated](https//visual-utopia.com).
+SCOPE is a discordJS bot that support the **Specific Calculation of Power (for) EiTS...** Or... more specifically, it's a discord bot that provides multiple functions to increase the decision making processes of players in [Visual-Utopia, _"A massively multi player strategy war game!"_ built in the early 2000s and rarely updated](https://visual-utopia.com).
 
-Built with ❤️ by [@LeviRoss1](https//github.com/leviross1) & [@CTFries](https//github.com/ctfries)
+Built with ❤️ by [@LeviRoss1](https://github.com/leviross1) & [@CTFries](https://github.com/ctfries)
 
 ## What commands does SCOPE have, and how do they work?
 
@@ -124,7 +124,7 @@ Well, you can fire up a nodejs service with this repo, instantiate a bot via dis
 
 Then invite it to your VU server.
 
-OR you can reach out to [@Percy](https//discordapp.com/users/394276895484805120) or [@Moff](https//discordapp.com/users/298154814406131713) to get a link to inviate a production ready version invited to your Visual-Utopia related discord server.
+OR you can reach out to [@Percy](https://discordapp.com/users/394276895484805120) or [@Moff](https://discordapp.com/users/298154814406131713) to get a link to inviate a production ready version invited to your Visual-Utopia related discord server.
 
 ```json
 {
