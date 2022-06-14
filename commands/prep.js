@@ -14,30 +14,9 @@ module.exports = {
     )
     .addIntegerOption((option) =>
       option
-        .setName("t1")
-        .setDescription("Tier 1 troop count")
+        .setName("troops")
+        .setDescription("Total troop count")
         .setRequired(true)
-    )
-    .addIntegerOption((option) =>
-      option
-        .setName("t2")
-        .setDescription("Tier 2 troop count")
-        .setRequired(true)
-    )
-    .addIntegerOption((option) =>
-      option
-        .setName("t3")
-        .setDescription("Tier 3 troop count")
-        .setRequired(true)
-    )
-    .addIntegerOption((option) =>
-      option
-        .setName("t4")
-        .setDescription("Tier 4 troop count")
-        .setRequired(true)
-    )
-    .addIntegerOption((option) =>
-      option.setName("t5").setDescription("T5 troop count").setRequired(true)
     )
     .addIntegerOption((option) =>
       option
@@ -56,13 +35,7 @@ module.exports = {
     ),
 
   async execute(interaction) {
-    let T1 = interaction.options.getInteger("t1");
-    let T2 = interaction.options.getInteger("t2");
-    let T3 = interaction.options.getInteger("t3");
-    let T4 = interaction.options.getInteger("t4");
-    let T5 = interaction.options.getInteger("t5");
-
-    let troops = T1 + T2 + T3 + T4 + T5;
+    let troops = interaction.options.getInteger("troops");
     let citySize = interaction.options.getInteger("size");
     let walls = 0;
 
