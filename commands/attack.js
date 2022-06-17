@@ -179,6 +179,9 @@ function battlecalc(string) {
   let noWallChance = [];
   let TotNoWallChance = [];
 
+  console.log(Prep);
+  console.log(CurPrep);
+
   // Second iteration, No Walls
   for (j = 0; j <= Prep[1]; j++) {
     // Iterate through Remaining Prep to find %Chance at each tick
@@ -187,7 +190,7 @@ function battlecalc(string) {
       if (Prep[1] > 0) {
         OPDP = (maxOPDP[i] * (CurPrep + j)) / (Prep[1] + CurPrep);
       } else {
-        OPDP = (maxOPDP[i] * (CurPrep + j)) / 1;
+        OPDP = maxOPDP[i];
       }
 
       // Add current chance value to array of values
