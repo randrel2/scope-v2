@@ -24,6 +24,7 @@
     "mathjs": "^9.5.1",
     "mysql": "^2.18.1",
     "node-cron": "^3.0.0",
+    "node-fetch": "^2.6.5",
     "nodemon": "^2.0.15",
     "numeral": "^2.0.6",
     "pino": "^7.0.0-rc.9",
