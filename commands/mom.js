@@ -5,7 +5,7 @@ module.exports = {
   data: new SlashCommandBuilder().setName("mom").setDescription("jokes"),
   async execute(interaction) {
     const sortedCategories = Object.keys(jokes).sort();
-    var category =
+    const category =
       jokes[
         sortedCategories[Math.floor(Math.random() * Object.keys(jokes).length)]
       ];
