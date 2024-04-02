@@ -40,6 +40,7 @@ function battlecalc(string) {
     ownTroops = "NoneListed";
   let tempString = string
     .toString()
+    .replace(/[\xC2\xA0]/g, ",")
     .replace(/\r?\n|\r/g, ",")
     .replace(",,", ",")
     .split(",")
@@ -52,6 +53,26 @@ function battlecalc(string) {
     .split(",")
     .join(" ")
     .split(" ");
+
+    console.log(tempString);
+
+    let tempString2 = string
+    .toString()
+    .replace(/[\xC2\xA0]/g, ",")
+    .replace(/\r?\n|\r/g, ",")
+    .replace(",,", ",")
+    .split(",")
+    .toString()
+    .replace(/,,/g, ",")
+    .split(",")
+    .toString()
+    .split("...")
+    .toString()
+    .split(",")
+    .join(" ")
+    .split(" ");
+
+    console.log(tempString2);
 
   armyNameStop = tempString.indexOf("with");
   ArmyName = tempString.slice(0, armyNameStop).join(" ");
@@ -323,9 +344,9 @@ module.exports = {
   async execute(interaction) {
     const channel = await interaction.channel.fetch();
     const messages = await channel.messages.fetch({ limit: 1 });
-    const firstmessage = messages.keys().next().value;
-    const messageContent = messages.get(firstmessage)["content"];
-    const userChoice = interaction.options.getInteger("visible");
+    const firstmessage = await messages.keys().next().value;
+    const messageContent = await messages.get(firstmessage)["content"];
+    const userChoice = await interaction.options.getInteger("visible");
 
     const allVals = battlecalc(messageContent);
     let ticks = 0;
