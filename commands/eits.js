@@ -99,7 +99,8 @@ module.exports = {
 		let startOwner = 'N/A';
 		let endOwner = 'N/A';
 		let walls = 0;
-		let argArray = messageContent.toString().split('\n').toString().split(',');
+		let argArray = messageContent.toString().replace(/[^\x00-\x7F]/g, "").split('\n').toString().split(',');
+
 		// Determine starting and ending cuts
 		for (let i = 0; i < argArray.length; i++) {
 			if (argArray[i] === 'When' && argArray[i + 1] === 'casting' && argArray[i + 2] === 'the') {

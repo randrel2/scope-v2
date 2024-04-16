@@ -40,7 +40,7 @@ function battlecalc(string) {
     ownTroops = "NoneListed";
   let tempString = string
     .toString()
-    .replace(/[\xC2\xA0]/g, ",")
+    .replace(/[^\x00-\x7F]/g, "")
     .replace(/\r?\n|\r/g, ",")
     .replace(",,", ",")
     .split(",")
@@ -53,26 +53,6 @@ function battlecalc(string) {
     .split(",")
     .join(" ")
     .split(" ");
-
-    console.log(tempString);
-
-    let tempString2 = string
-    .toString()
-    .replace(/[\xC2\xA0]/g, ",")
-    .replace(/\r?\n|\r/g, ",")
-    .replace(",,", ",")
-    .split(",")
-    .toString()
-    .replace(/,,/g, ",")
-    .split(",")
-    .toString()
-    .split("...")
-    .toString()
-    .split(",")
-    .join(" ")
-    .split(" ");
-
-    console.log(tempString2);
 
   armyNameStop = tempString.indexOf("with");
   ArmyName = tempString.slice(0, armyNameStop).join(" ");
