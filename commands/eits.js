@@ -119,14 +119,12 @@ module.exports = {
 		}
 		// parse input data according to above
 		argArray = argArray.slice(startCut, endCut);
-		console.log(argArray);
 
 		// Army EITS Reports
 		if (argArray.length < 15) {
 			// city === false, army === true
 			type = false;
 			intermNames = argArray.splice(0,1).toString().split('from');
-			console.log(intermNames);
 			owner = intermNames[1];
 			target = intermNames[0];
 			rawUnits = argArray.slice(argArray.length - 6, argArray.length).toString().replace('Pony,riders', 'Pony riders').toString().split(':').toString().split(',');
@@ -144,15 +142,15 @@ module.exports = {
 			startOwner = argArray.indexOf('by');
 			endOwner = argArray.indexOf('', startOwner);
 			owner = argArray.slice(startOwner + 1, endOwner).join(' ');
-			rawUnits = argArray.slice(endOwner + 1, endOwner + 7).toString().replace('Pony,riders', 'Pony riders').toString().split(':').toString().split(',');
-			GTs = argArray.slice(endOwner + 13, endOwner + 15).toString().replace('Guard,Towers:', 'Guard Towers:').split(':')[1];
-			MTs = argArray.slice(endOwner + 11, endOwner + 13).toString().replace('Magic,Towers:', 'Magic Towers:').split(':')[1];
-			walls = argArray.slice(endOwner + 20, endOwner + 21).toString().split(':')[1];
+			rawUnits = argArray.slice(endOwner + 1, endOwner + 8).toString().replace('Pony,riders', 'Pony riders').toString().split(':').toString().split(',');
+			GTs = argArray.slice(endOwner + 14, endOwner + 16).toString().replace('Guard,Towers:', 'Guard Towers:').split(':')[1];
+			MTs = argArray.slice(endOwner + 12, endOwner + 14).toString().replace('Magic,Towers:', 'Magic Towers:').split(':')[1];
+			walls = argArray.slice(endOwner + 21, endOwner + 22).toString().split(':')[1];
 			extraArmies = argArray.slice(argArray.indexOf('city:') + 1, argArray.indexOf('city:') + 2).toString().split('(')[0];
 			extraTroops = argArray.slice(argArray.indexOf('men)') - 1, argArray.indexOf('men)'));
-			console.log(extraTroops);
 			rawUnits.push('GTs', GTs);
 		}
+
 		for (i = 0; i < (rawUnits.length / 2); i++) {
 			units[i] = rawUnits[(i * 2) + 1];
 		}

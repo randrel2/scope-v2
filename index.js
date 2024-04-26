@@ -89,7 +89,7 @@ client.on('interactionCreate', async (interaction) => {
 			user: interaction.user.username + '#' + interaction.user.discriminator,
 			options: interaction.options,
 		});
-		console.log(interaction.options);
+		// console.log(interaction.options);
 		const command = client.commands.get(interaction.commandName);
 		if (!command) return;
 		try {
