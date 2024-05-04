@@ -27,7 +27,7 @@ module.exports = {
 		u7: { name: 'Guard Towers', op: 0, dp: 5, cost: 0 },
 	},
 	dwarf: {
-		u1: { name: 'Swordsmen', op: 2, dp: 2, cost: 250 },
+		u1: { name: 'Swordsmen', op: 3, dp: 2, cost: 250 },
 		u2: { name: 'Hammerthrowers', op: 5, dp: 6, cost: 900 },
 		u3: { name: 'Axemen', op: 10, dp: 8, cost: 2500 },
 		u4: { name: 'Runemasters', op: 0, dp: 0, cost: 300 },
