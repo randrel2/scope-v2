@@ -28,7 +28,9 @@
     "nodemon": "^2.0.15",
     "numeral": "^2.0.6",
     "pino": "^7.0.0-rc.9",
-    "sql": "^0.78.0"
+    "sql": "^0.78.0",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
   },
   "devDependencies": {
     "eslint": "^8.1.0"
