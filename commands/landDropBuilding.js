@@ -1,51 +1,117 @@
 const { SlashCommandBuilder } = require("@discordjs/builders");
 const { MessageEmbed } = require("discord.js");
 
-function calculate(race, cityType, leftoverBuildings, cityPage) {
-  var buildingLeftExtracted = cityPage.match(/space for\s*(\d+)\s*more buildings/);
-  var buildingsLeft = buildingLeftExtracted ? parseInt(buildingLeftExtracted[1], 10) : 0;
+class CityPageExtractionError extends Error {
+  constructor(errorMessage) {
+    super("Failed to extract values from city page");
+    this.embed = createErrorEmbed(`${errorMessage}
+      \nPlease make sure you have copied the entire city page (show all).
+      \nTip: Use select all on mobile or ctrl/cmd + a on pc/mac to copy the page.`);
+  }
+}
 
-  var extractedBuiltHomes = cityPage.match(/Homes[\s\S]*?Built:\s*(\d+)/);
-  var builtHomes = extractedBuiltHomes ? parseInt(extractedBuiltHomes[1], 10) : 0;
+function extractBuildingsLeftToBuild(cityPage) {
+  const extracted = cityPage.match(/space for\s*(\d+)\s*more buildings/);
 
-  var extractedBuiltMines = cityPage.match(/Mines[\s\S]*?Built:\s*(\d+)/);
-  var builtMines = extractedBuiltMines ? parseInt(extractedBuiltMines[1], 10) : 0;
-
-  var extractedBuiltLumbermills = cityPage.match(/Lumbermills[\s\S]*?Built:\s*(\d+)/);
-  var builtLumbermills = extractedBuiltLumbermills ? parseInt(extractedBuiltLumbermills[1], 10) : 0;
-
-  var extractedBultFarms = cityPage.match(/Farms[\s\S]*?Built:\s*(\d+)/);
-  var builtFarms = extractedBultFarms ? parseInt(extractedBultFarms[1], 10) : 0;
-
-  var extractedBuiltArmories = cityPage.match(/Armories[\s\S]*?Built:\s*(\d+)/);
-  var builtArmories = extractedBuiltArmories ? parseInt(extractedBuiltArmories[1], 10) : 0;
-
-  var builtResourceBuildings = builtMines + builtLumbermills + builtFarms + builtArmories;
-  var totalBuildings = builtHomes + builtResourceBuildings + buildingsLeft - leftoverBuildings; 
-
-  var maxArmories = 7500;
-
-  var resourceRatio = 5/6;
-  var homesRatio = 1/6;
-
-  if (race === "dwarf" && cityType === "mine") {
-    resourceRatio = 72580/90000;
-    homesRatio = 17420/90000;
+  if (!extracted) {
+    throw new CityPageExtractionError("Could not extract buildings left to build from city page");
   }
 
-  var targetMines = cityType === "mine" ? Math.floor(totalBuildings * resourceRatio) - builtResourceBuildings : 0;
-  var targetLumbermills = cityType === "lumber" ? Math.floor(totalBuildings * resourceRatio) - builtResourceBuildings : 0;
-  var targetFarms = cityType === "farm" ? Math.floor(totalBuildings * resourceRatio) - builtResourceBuildings : 0;
-  var targetArmories = cityType === "arms" ? Math.floor(totalBuildings * resourceRatio) - builtResourceBuildings : 0;
-  var targetHomes = Math.ceil(totalBuildings * homesRatio) - builtHomes;
+  return extracted ? parseInt(extracted[1], 10) : 0;
+}
 
-  if (cityType === "arms") {
-    var adjustedArms = Math.min(targetArmories, maxArmories);
-    targetHomes += targetArmories - adjustedArms;
+function extractBuildings(cityPage) {
+  const buildingTypes = ["Homes", "Mines", "Lumbermills", "Farms", "Armories", "Guardtowers", "Magic Towers", "Taverne", "Warehouses"];
+  const extractedBuilt = {};
+
+  for (let i = 0; i < buildingTypes.length; i++) {
+    const buildingType = buildingTypes[i];
+    const extracted = cityPage.match(new RegExp(`${buildingType}[\\s\\S]*?Built:\\s*(\\d+)`));
+
+    if (!extracted) {
+      throw new CityPageExtractionError(`Could not extract ${buildingType} from city page..`);
+    }   
+
+    extractedBuilt[buildingType] = parseInt(extracted[1], 10);
+  }
+
+  return extractedBuilt;
+}
+
+function calcualteHomesTarget(config, totalBuildings, builtHomes) {
+  const homesRatio = calculateHomesRatio(config);
+  return Math.ceil(totalBuildings * homesRatio) - builtHomes;
+}
+
+function calculateHomesRatio(config) {
+  return config.race == "dwarf" && config.cityType === "mine" ? 17420 / 90000 : 1 / 6;
+}
+
+function calculateResourceBuildingTarget(config, resourceType, totalBuildings, builtResourceBuildings, surplusHomes) {
+  const resourceRatio = calculateResourceRatio(config);
+
+  if (config.cityType === resourceType) {
+    let targetResourceBuildings = Math.floor(totalBuildings * resourceRatio) - builtResourceBuildings;
+    
+    if (surplusHomes > 0) {
+      return totalBuildings - builtResourceBuildings - surplusHomes;
+    }
+
+    return targetResourceBuildings;
+  }
+
+  return 0;
+}
+
+function calculateResourceRatio(config) {
+  return config.race == "dwarf" && config.cityType === "mine" ? 72580 / 90000 : 5 / 6;
+}
+
+function calculate(config) {
+  const buildingsLeftToBuild = extractBuildingsLeftToBuild(config.cityPage);
+  const builtBuildings = extractBuildings(config.cityPage);
+
+  const builtResourceBuildings = builtBuildings["Mines"] + builtBuildings["Lumbermills"] + builtBuildings["Farms"] + builtBuildings["Armories"];
+  const miscBuildings = builtBuildings["Guardtowers"] + builtBuildings["Magic Towers"] + builtBuildings["Taverne"] + builtBuildings["Warehouses"];
+  const totalBuildingsMinusMisc = builtBuildings["Homes"] + builtResourceBuildings + buildingsLeftToBuild - config.leftoverBuildings;
+
+  let targetHomes = calcualteHomesTarget(config, totalBuildingsMinusMisc, builtBuildings["Homes"]);
+  let surplusHomes = 0;
+
+  if (targetHomes < 0) {
+    surplusHomes = builtBuildings["Homes"];
+    targetHomes = 0;
+  }
+
+  const targetMines = calculateResourceBuildingTarget(config, "mine", totalBuildingsMinusMisc, builtResourceBuildings, surplusHomes);
+  const targetLumbermills = calculateResourceBuildingTarget(config, "lumber", totalBuildingsMinusMisc, builtResourceBuildings, surplusHomes);
+  const targetFarms = calculateResourceBuildingTarget(config, "farm", totalBuildingsMinusMisc, builtResourceBuildings, surplusHomes);
+  const targetArmories = calculateResourceBuildingTarget(config, "arms", totalBuildingsMinusMisc, builtResourceBuildings, surplusHomes);
+
+  const maxArmories = 7500;
+
+  if (config.cityType === "arms" && targetArmories + builtBuildings["Armories"] > maxArmories) {
+    const adjustedArms = maxArmories - builtBuildings["Armories"];
+    const differenceFromTarget = targetArmories - adjustedArms;
+    targetHomes += differenceFromTarget;
+
     targetArmories = adjustedArms;
-  } 
-  
-  return { "homes": targetHomes, "mines": targetMines , "lumbermills": targetLumbermills, "farms": targetFarms, "armories": targetArmories };
+  }
+
+  return { 
+    "totalBuildings": totalBuildingsMinusMisc + miscBuildings,
+    "homes": targetHomes, 
+    "mines": targetMines, 
+    "lumbermills": targetLumbermills, 
+    "farms": targetFarms, 
+    "armories": targetArmories
+  };
+}
+
+function createErrorEmbed(message) {
+  return new MessageEmbed()
+    .setColor('#FF0000')
+    .setDescription(message);
 }
 
 module.exports = {
@@ -81,148 +147,60 @@ module.exports = {
 
   async execute(interaction) {
     const validRaces = ["human", "elf", "halfling", "dwarf", "orc", "troll"];
-    const race = interaction.options.getString("buildings");
+    const race = interaction.options.getString("race").toLowerCase();
 
     if (!validRaces.includes(race)) {
-      return await interaction.reply({ embeds: [`Please select a valid race (e.g, human, elf, halfling, dwarf, orc, troll)`], ephemeral: userChoice });
+      const embed = createErrorEmbed('Please select a valid race (e.g, human, elf, halfling, dwarf, orc, troll)');
+      return await interaction.reply({ embeds: [embed] });
     }
 
     const validCityTypes = ["mine", "farm", "lumber", "arms"];
-    const cityType = interaction.options.getString("citytype");
+    const cityType = interaction.options.getString("citytype").toLowerCase();
 
     if (!validCityTypes.includes(cityType)) {
-      return await interaction.reply({ embeds: [`Please select a valid city type (e.g, mine, farm, lumber, arms)`], ephemeral: userChoice });
+      const embed = createErrorEmbed('Please select a valid city type (e.g, mine, farm, lumber, arms)');
+      return await interaction.reply({ embeds: [embed] });
     }
 
     const leftoverBuildings = interaction.options.getInteger("leftoverbuildings");
+
+    if (leftoverBuildings < 0) {
+      const embed = createErrorEmbed('Please enter a valid non-negative number of leftover buildings');
+      return await interaction.reply({ embeds: [embed] });
+    }
+
     const cityPage = interaction.options.getString("citypage");
 
-    let embedContent = [];
+    const config = {
+      race: race,
+      cityType: cityType,
+      leftoverBuildings: leftoverBuildings,
+      cityPage: cityPage
+    };
 
-    let result = calculate(race, cityType, leftoverBuildings, cityPage);
+    let result;
 
-    embedContent = `You have ${leftoverBuildings} buildings left over after your drop. \n\n
-    You should build the following buildings: \n
-    Homes: ${result.homes} \n
-    Mines: ${result.mines} \n
-    Lumbermills: ${result.lumbermills} \n
-    Farms: ${result.farms} \n
-    Armories: ${result.armories} \n`;
+    try {
+      result = calculate(config);
+    }
+    catch (error) {
+      return await interaction.reply({ embeds: [error.embed] });
+    }
 
+    let embedContent = 
+`You have ${config.leftoverBuildings} buildings left over after your drop.\n
+**You should build the following:** \n
+\`\`\`Homes: ${result.homes}
+Mines: ${result.mines}
+Lumbermills: ${result.lumbermills}
+Farms: ${result.farms}
+Armories: ${result.armories}\`\`\``;
+    
     const embed = new MessageEmbed()
       .setColor(2123412)
-      .setTitle(
-        `Land drop ${buildings} buildings - ${interaction.user.username}`
-      )
+      .setTitle(`Land dropping to ${result.totalBuildings} buildings - ${interaction.user.username}`)
       .setDescription(embedContent)
       .setTimestamp();
-    return await interaction.reply({ embeds: [embed], ephemeral: userChoice });
+    return await interaction.reply({ embeds: [embed] });
   },
 };
-
-// Uncomment the below code to test the function
-
-/*console.log(calculate("human", "mine", 0, 
-  `Valhalla
-Karmic Forge
-Choose city	Empl.	Prod.	Morale	Gates
-
-Karmic Forge
-100%	100%	100%	No gates
-
-
-This city has 108851 peasants who are working as hard as they can.
-
-There is space for 52213 more buildings and at this time we can build a maximum of 52213 structures or 1274 more walls.
-
-It costs 1431 gold, 0 tree and 238 stone ( 1908 for walls) to build one building.
-
-Each building can take up to a maximum of 26 days to build.
-
-
-
-Homes
-Houses 25 people.
-Built:	4356	Build:
-In construction:	0
-Homes filled:	100%
-
-
-Farms
-Each farm produces around 11 food per day.
-Built:	35	Build:
-In construction:	0
-
-
-Mines
-Each mine produces around 15 gold per day and around 9 stone per day.
-Built:	21780	Build:
-In construction:	0
-
-
-Lumbermills
-Each lumbermill produces tree.
-Built:	0	Build:
-In construction:	0
-
-
-Magic Towers
-Will defend your city from magic and make it much easier for your wizards to cast long range spells.
-Built:	0	Build:
-In construction:	0
-
-
-Guardtowers
-Gives extra defence and increases line of sight.
-Built:	1	Build:
-In construction:	0
-
-
-Taverne
-Increases the morale in your city and the armies stationed in the city.
-Built:	15	Build:
-In construction:	0
-
-
-Armories
-Lowers training time and makes you able to train more troops in your colony.
-Built:	0	Build:
-In construction:	0
-
-
-Warehouses
-Stores one hundred times more resources than farms/mines/mills.
-(All buildings can store an unlimited amount of resources)
-Built:	0	Build:
-In construction:	0
-
-
-Walls
-Increase the preparation time when attacking your colony.
-Built:	0 / 1274	Build:
-In construction:	0
-
-
-Wreckages
-When you destroy buildings they will become Wreckages and will disappear over time.
-Wrecked buildings:	0
-
-Destroy buildings	
-
-
-In Construction
-Days	1	2-9	10-19	20-39	40-59	60-100
-Homes	0	0	0	0	0	0
-Farms	0	0	0	0	0	0
-Mines	0	0	0	0	0	0
-Lumbermills	0	0	0	0	0	0
-Magic Towers	0	0	0	0	0	0
-Guardtowers	0	0	0	0	0	0
-Taverne	0	0	0	0	0	0
-Armories	0	0	0	0	0	0
-Warehouses	0	0	0	0	0	0
-Walls	0	0	0	0	0	0
-- close -
-  Copyright © 1999-2025 Visual Utopia. All rights reserved. Page loaded in 0.06 seconds. Server time: 10:01:10 AM`
-
-)); */
